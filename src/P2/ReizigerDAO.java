@@ -4,7 +4,6 @@ import java.sql.*;
 import java.text.MessageFormat;
 
 public class ReizigerDAO {
-
     private static void stringify(ResultSet myRs) throws SQLException {
         String id = myRs.getString("reiziger_id");
         String vrlt = myRs.getString("voorletters");
