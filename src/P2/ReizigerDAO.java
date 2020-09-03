@@ -4,15 +4,6 @@ import java.sql.*;
 import java.text.MessageFormat;
 
 public class ReizigerDAO {
-    private static Connection connect() throws Exception {
-        String dbUrl = "jdbc:postgresql://localhost:5432/ovchip";
-        String user = "postgres";
-        String pass = "Hooibaal";
-
-        Connection myConn = DriverManager.getConnection(dbUrl, user, pass);
-
-        return myConn;
-    }
 
     private static void stringify(ResultSet myRs) throws SQLException {
         String id = myRs.getString("reiziger_id");
@@ -30,7 +21,7 @@ public class ReizigerDAO {
 
     public static boolean readReizigerByID(int id) {
         try {
-            Statement myStmt = connect().createStatement();
+            Statement myStmt = Connect.connect().createStatement();
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM reiziger WHERE reiziger_id = " + id);
             while (myRs.next()) {
                 stringify(myRs);
@@ -42,7 +33,7 @@ public class ReizigerDAO {
     }
     public static boolean readReizigerByGebDatum(Date gebDatum) {
         try {
-            Statement myStmt = connect().createStatement();
+            Statement myStmt = Connect.connect().createStatement();
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM reiziger WHERE geboortedatum = '" + gebDatum +"';");
             while (myRs.next()) {
                 stringify(myRs);
@@ -54,7 +45,7 @@ public class ReizigerDAO {
     }
     public static boolean readAllReiziger() {
         try {
-            Statement myStmt = connect().createStatement();
+            Statement myStmt = Connect.connect().createStatement();
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM reiziger");
 
             while (myRs.next()) {
@@ -67,7 +58,7 @@ public class ReizigerDAO {
     }
     public static boolean createReiziger(Reiziger reiziger) {
         try {
-            Statement myStmt = connect().createStatement();
+            Statement myStmt = Connect.connect().createStatement();
 
             String sql = "INSERT INTO reiziger (reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum) " +
                     "VALUES ("+ reiziger.getId() + ", '" + reiziger.getVoorletters() + "', ";
@@ -86,7 +77,7 @@ public class ReizigerDAO {
     }
     public static boolean updateReiziger(int getId, String getVoorletters, String getTussenvoegsel, String getAchternaam, Date getGeboortedatum) {
         try {
-            Statement myStmt = connect().createStatement();
+            Statement myStmt = Connect.connect().createStatement();
 
             String sql = "UPDATE reiziger SET " +
                     "voorletters = '" + getVoorletters + "', ";
@@ -109,7 +100,7 @@ public class ReizigerDAO {
     }
     public static boolean deleteReiziger(Reiziger reiziger) {
         try {
-            Statement myStmt = connect().createStatement();
+            Statement myStmt = Connect.connect().createStatement();
             String sql = "DELETE FROM reiziger WHERE reiziger_id = " + reiziger.getId();
             myStmt.executeUpdate(sql);
 

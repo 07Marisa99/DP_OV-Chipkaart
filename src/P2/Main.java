@@ -6,6 +6,15 @@ public class Main {
         System.out.println();
 
         Reiziger reiziger = new Reiziger(6, "S", "", "Waal", "1974-10-8");
+        Adres adres = new Adres(6, "1234EF", "78I", "Tiendeweg", "Elfstad", 6);
+
+        System.out.println();
+
+        System.out.println(reiziger.toString());
+        System.out.println(adres.toString());
+
+        System.out.println();
+
         ReizigerDAO.createReiziger(reiziger);
         ReizigerDAO.readAllReiziger();
 
