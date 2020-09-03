@@ -89,7 +89,7 @@ public class ReizigerDAO {
             }
             sql += "achternaam = '" + getAchternaam + "', " +
                     "geboortedatum = '" + getGeboortedatum + "'" +
-                    "WHERE reiziger_id = " + getId;
+                    "WHERE reiziger_id = " + getId +";";
 
             myStmt.executeUpdate(sql);
 

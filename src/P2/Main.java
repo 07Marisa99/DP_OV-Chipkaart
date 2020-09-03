@@ -3,6 +3,7 @@ package P2;
 public class Main {
     public static void main(String[] args) {
         ReizigerDAO.readAllReiziger();
+        AdresDAO.readAllAdres();
         System.out.println();
 
         Reiziger reiziger = new Reiziger(6, "S", "", "Waal", "1974-10-8");
@@ -11,7 +12,19 @@ public class Main {
         ReizigerDAO.createReiziger(reiziger);
         AdresDAO.createAdress(adres);
 
+        System.out.println();
+
+        AdresDAO.readAllAdres();
+
+        System.out.println();
+
         AdresDAO.readByReiziger(1);
+        AdresDAO.readByReiziger(6);
+
+        AdresDAO.updateAdress(6, "1234EF", "78I", "Tiendeweg", "Elfdorp");
+
+        System.out.println();
+
         AdresDAO.readByReiziger(6);
 
         System.out.println();
