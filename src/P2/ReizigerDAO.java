@@ -28,7 +28,7 @@ public class ReizigerDAO {
         }
     }
 
-    public static void readReizigerByID(int id) {
+    public static boolean readReizigerByID(int id) {
         try {
             Statement myStmt = connect().createStatement();
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM reiziger WHERE reiziger_id = " + id);
@@ -37,9 +37,10 @@ public class ReizigerDAO {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+            return false;
+        } return true;
     }
-    public static void readReizigerByGebDatum(Date gebDatum) {
+    public static boolean readReizigerByGebDatum(Date gebDatum) {
         try {
             Statement myStmt = connect().createStatement();
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM reiziger WHERE geboortedatum = '" + gebDatum +"';");
@@ -48,9 +49,10 @@ public class ReizigerDAO {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+            return false;
+        } return true;
     }
-    public static void readAllReiziger() {
+    public static boolean readAllReiziger() {
         try {
             Statement myStmt = connect().createStatement();
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM reiziger");
@@ -60,9 +62,10 @@ public class ReizigerDAO {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+            return false;
+        } return true;
     }
-    public static void createReiziger(Reiziger reiziger) {
+    public static boolean createReiziger(Reiziger reiziger) {
         try {
             Statement myStmt = connect().createStatement();
 
@@ -78,31 +81,33 @@ public class ReizigerDAO {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+            return false;
+        } return true;
     }
-    public static void updateReiziger(Reiziger reiziger) {
+    public static boolean updateReiziger(int getId, String getVoorletters, String getTussenvoegsel, String getAchternaam, Date getGeboortedatum) {
         try {
             Statement myStmt = connect().createStatement();
 
             String sql = "UPDATE reiziger SET " +
-                    "voorletters = '" + reiziger.getVoorletters() + "', ";
+                    "voorletters = '" + getVoorletters + "', ";
 
-            if (reiziger.getTussenvoegsel() != null) {
-                sql += "tussenvoegsel = '" + reiziger.getTussenvoegsel() + "', ";
+            if (getTussenvoegsel!= null) {
+                sql += "tussenvoegsel = '" + getTussenvoegsel + "', ";
             } else {
                 sql += "tussenvoegsel = " + null + ", ";
             }
-            sql += "achternaam = '" + reiziger.getAchternaam() + "', " +
-                    "geboortedatum = '" + reiziger.getGeboortedatum() + "'" +
-                    "WHERE reiziger_id = " + reiziger.getId();
+            sql += "achternaam = '" + getAchternaam + "', " +
+                    "geboortedatum = '" + getGeboortedatum + "'" +
+                    "WHERE reiziger_id = " + getId;
 
             myStmt.executeUpdate(sql);
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+            return false;
+        } return true;
     }
-    public static void deleteReiziger(Reiziger reiziger) {
+    public static boolean deleteReiziger(Reiziger reiziger) {
         try {
             Statement myStmt = connect().createStatement();
             String sql = "DELETE FROM reiziger WHERE reiziger_id = " + reiziger.getId();
@@ -110,6 +115,7 @@ public class ReizigerDAO {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+            return false;
+        } return true;
     }
 }

@@ -12,7 +12,7 @@ public class Main {
         System.out.println();
 
         reiziger.setTussenvoegsel("de");
-        ReizigerDAO.updateReiziger(reiziger);
+        ReizigerDAO.updateReiziger(reiziger.getId(), reiziger.getVoorletters(), reiziger.getTussenvoegsel(), reiziger.getAchternaam(), reiziger.getGeboortedatum());
         ReizigerDAO.readAllReiziger();
 
         System.out.println();
