@@ -22,6 +22,10 @@ public class Adres {
         adresList.add(this);
     }
 
+    public int getAdresID() {
+        return adresID;
+    }
+
     public String getStraat() {
         return straat;
     }

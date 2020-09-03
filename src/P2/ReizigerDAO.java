@@ -98,10 +98,12 @@ public class ReizigerDAO {
             return false;
         } return true;
     }
-    public static boolean deleteReiziger(Reiziger reiziger) {
+    public static boolean deleteReiziger(int id) {
         try {
+            AdresDAO.deleteAdress(id);
+
             Statement myStmt = Connect.connect().createStatement();
-            String sql = "DELETE FROM reiziger WHERE reiziger_id = " + reiziger.getId();
+            String sql = "DELETE FROM reiziger WHERE reiziger_id = " + id;
             myStmt.executeUpdate(sql);
 
         } catch (Exception e) {

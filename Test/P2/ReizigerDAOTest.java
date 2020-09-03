@@ -35,6 +35,6 @@ class ReizigerDAOTest {
 
     @Test
     void deleteReiziger() {
-        assertTrue(ReizigerDAO.deleteReiziger(reiziger));
+        assertTrue(ReizigerDAO.deleteReiziger(reiziger.getId()));
     }
 }

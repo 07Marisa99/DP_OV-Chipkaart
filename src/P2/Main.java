@@ -8,6 +8,12 @@ public class Main {
         Reiziger reiziger = new Reiziger(6, "S", "", "Waal", "1974-10-8");
         Adres adres = new Adres(6, "1234EF", "78I", "Tiendeweg", "Elfstad", 6);
 
+        ReizigerDAO.createReiziger(reiziger);
+        AdresDAO.createAdress(adres);
+
+        AdresDAO.readByReiziger(1);
+        AdresDAO.readByReiziger(6);
+
         System.out.println();
 
         System.out.println(reiziger.toString());
@@ -15,7 +21,6 @@ public class Main {
 
         System.out.println();
 
-        ReizigerDAO.createReiziger(reiziger);
         ReizigerDAO.readAllReiziger();
 
         System.out.println();
@@ -38,7 +43,7 @@ public class Main {
 
         System.out.println();
 
-        ReizigerDAO.deleteReiziger(reiziger);
+        ReizigerDAO.deleteReiziger(reiziger.getId());
         ReizigerDAO.readAllReiziger();
     }
 }
