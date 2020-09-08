@@ -4,7 +4,13 @@ import java.sql.*;
 import java.text.MessageFormat;
 
 public class ReizigerDAO {
-    private static void stringify(ResultSet myRs) throws SQLException {
+    private Connection connection;
+
+    public ReizigerDAO (Connection myConn) {
+        connection = myConn;
+    }
+
+    private void stringify(ResultSet myRs) throws SQLException {
         String id = myRs.getString("reiziger_id");
         String vrlt = myRs.getString("voorletters");
         String tus = myRs.getString("tussenvoegsel");
@@ -18,9 +24,9 @@ public class ReizigerDAO {
         }
     }
 
-    public static boolean readReizigerByID(int id) {
+    public boolean readReizigerByID(int id) {
         try {
-            Statement myStmt = Connect.connect().createStatement();
+            Statement myStmt = connection.createStatement();
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM reiziger WHERE reiziger_id = " + id);
             while (myRs.next()) {
                 stringify(myRs);
@@ -30,9 +36,10 @@ public class ReizigerDAO {
             return false;
         } return true;
     }
-    public static boolean readReizigerByGebDatum(Date gebDatum) {
+
+    public boolean readReizigerByGebDatum(Date gebDatum) {
         try {
-            Statement myStmt = Connect.connect().createStatement();
+            Statement myStmt = connection.createStatement();
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM reiziger WHERE geboortedatum = '" + gebDatum +"';");
             while (myRs.next()) {
                 stringify(myRs);
@@ -42,9 +49,9 @@ public class ReizigerDAO {
             return false;
         } return true;
     }
-    public static boolean readAllReiziger() {
+    public boolean readAllReiziger() {
         try {
-            Statement myStmt = Connect.connect().createStatement();
+            Statement myStmt = connection.createStatement();
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM reiziger");
 
             while (myRs.next()) {
@@ -55,9 +62,9 @@ public class ReizigerDAO {
             return false;
         } return true;
     }
-    public static boolean createReiziger(Reiziger reiziger) {
+    public boolean createReiziger(Reiziger reiziger) {
         try {
-            Statement myStmt = Connect.connect().createStatement();
+            Statement myStmt = connection.createStatement();
 
             String sql = "INSERT INTO reiziger (reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum) " +
                     "VALUES ("+ reiziger.getId() + ", '" + reiziger.getVoorletters() + "', ";
@@ -74,9 +81,9 @@ public class ReizigerDAO {
             return false;
         } return true;
     }
-    public static boolean updateReiziger(int getId, String getVoorletters, String getTussenvoegsel, String getAchternaam, Date getGeboortedatum) {
+    public boolean updateReiziger(int getId, String getVoorletters, String getTussenvoegsel, String getAchternaam, Date getGeboortedatum) {
         try {
-            Statement myStmt = Connect.connect().createStatement();
+            Statement myStmt = connection.createStatement();
 
             String sql = "UPDATE reiziger SET " +
                     "voorletters = '" + getVoorletters + "', ";
@@ -97,11 +104,11 @@ public class ReizigerDAO {
             return false;
         } return true;
     }
-    public static boolean deleteReiziger(int id) {
+    public boolean deleteReiziger(int id, AdresDAO adresDAO) {
         try {
-            AdresDAO.deleteAdress(id);
+            adresDAO.deleteAdress(id);
 
-            Statement myStmt = Connect.connect().createStatement();
+            Statement myStmt = connection.createStatement();
             String sql = "DELETE FROM reiziger WHERE reiziger_id = " + id;
             myStmt.executeUpdate(sql);
 

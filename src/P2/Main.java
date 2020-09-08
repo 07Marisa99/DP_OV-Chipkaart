@@ -1,31 +1,39 @@
 package P2;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+
 public class Main {
-    public static void main(String[] args) {
-        ReizigerDAO.readAllReiziger();
-        AdresDAO.readAllAdres();
+    public static void main(String[] args) throws Exception {
+        Connect connect = new Connect();
+
+        ReizigerDAO reizigerDAO = new ReizigerDAO(connect.getConnection());
+        AdresDAO adresDAO = new AdresDAO(connect.getConnection());
+
+        reizigerDAO.readAllReiziger();
+        adresDAO.readAllAdres();
         System.out.println();
 
         Reiziger reiziger = new Reiziger(6, "S", "", "Waal", "1974-10-8");
         Adres adres = new Adres(6, "1234EF", "78I", "Tiendeweg", "Elfstad", reiziger.getId());
 
-        ReizigerDAO.createReiziger(reiziger);
-        AdresDAO.createAdress(adres);
+        reizigerDAO.createReiziger(reiziger);
+        adresDAO.createAdress(adres);
 
         System.out.println();
 
-        AdresDAO.readAllAdres();
+        adresDAO.readAllAdres();
 
         System.out.println();
 
-        AdresDAO.readByReiziger(1);
-        AdresDAO.readByReiziger(6);
+        adresDAO.readByReiziger(1);
+        adresDAO.readByReiziger(6);
 
-        AdresDAO.updateAdress(6, "1234EF", "78I", "Tiendeweg", "Elfdorp");
+        adresDAO.updateAdress(6, "1234EF", "78I", "Tiendeweg", "Elfdorp");
 
         System.out.println();
 
-        AdresDAO.readByReiziger(6);
+        adresDAO.readByReiziger(6);
 
         System.out.println();
 
@@ -34,29 +42,29 @@ public class Main {
 
         System.out.println();
 
-        ReizigerDAO.readAllReiziger();
+        reizigerDAO.readAllReiziger();
 
         System.out.println();
 
         reiziger.setTussenvoegsel("de");
-        ReizigerDAO.updateReiziger(reiziger.getId(), reiziger.getVoorletters(), reiziger.getTussenvoegsel(), reiziger.getAchternaam(), reiziger.getGeboortedatum());
-        ReizigerDAO.readAllReiziger();
+        reizigerDAO.updateReiziger(reiziger.getId(), reiziger.getVoorletters(), reiziger.getTussenvoegsel(), reiziger.getAchternaam(), reiziger.getGeboortedatum());
+        reizigerDAO.readAllReiziger();
 
         System.out.println();
 
-        ReizigerDAO.readReizigerByID(reiziger.getId());
-        ReizigerDAO.readReizigerByID(2);
+        reizigerDAO.readReizigerByID(reiziger.getId());
+        reizigerDAO.readReizigerByID(2);
 
         System.out.println();
 
-        ReizigerDAO.readReizigerByGebDatum(reiziger.getGeboortedatum());
-        ReizigerDAO.readReizigerByGebDatum(java.sql.Date.valueOf("2002-12-03"));
+        reizigerDAO.readReizigerByGebDatum(reiziger.getGeboortedatum());
+        reizigerDAO.readReizigerByGebDatum(java.sql.Date.valueOf("2002-12-03"));
 
         System.out.println();
 
         System.out.println();
 
-        ReizigerDAO.deleteReiziger(reiziger.getId());
-        ReizigerDAO.readAllReiziger();
+        reizigerDAO.deleteReiziger(reiziger.getId(), adresDAO);
+        reizigerDAO.readAllReiziger();
     }
 }

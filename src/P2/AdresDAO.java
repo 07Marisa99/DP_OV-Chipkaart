@@ -5,7 +5,12 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 
 public class AdresDAO {
-    private static String stringify(ResultSet myRs) throws SQLException {
+    private Connection connection;
+
+    public AdresDAO(Connection myConn) {
+        connection = myConn;
+    }
+    private String stringify(ResultSet myRs) throws SQLException {
         String id = myRs.getString("adres_id");
         String postcode = myRs.getString("postcode");
         String huisnummer = myRs.getString("huisnummer");
@@ -14,10 +19,10 @@ public class AdresDAO {
         return MessageFormat.format("{0}.\t {1} {2},\t {3} {4};", id, straat, huisnummer, postcode, woonplaats);
     }
 
-    public static boolean readAllAdres() {
+    public boolean readAllAdres() {
         try {
             ArrayList<String> adressen = new ArrayList<>();
-            Statement myStmt = Connect.connect().createStatement();
+            Statement myStmt = connection.createStatement();
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM adres;");
             while (myRs.next()) {
                 adressen.add(stringify(myRs));
@@ -30,9 +35,9 @@ public class AdresDAO {
         return true;
     }
 
-    public static boolean readByReiziger(int id) {
+    public boolean readByReiziger(int id) {
         try {
-            Statement myStmt = Connect.connect().createStatement();
+            Statement myStmt = connection.createStatement();
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM adres WHERE reiziger_id = " + id);
             while (myRs.next()) {
                 System.out.println(stringify(myRs));
@@ -44,9 +49,9 @@ public class AdresDAO {
         return true;
     }
 
-    public static boolean createAdress(Adres adres) {
+    public boolean createAdress(Adres adres) {
         try {
-            Statement myStmt = Connect.connect().createStatement();
+            Statement myStmt = connection.createStatement();
             String sql = "INSERT INTO adres (adres_id, postcode, huisnummer, straat, woonplaats, reiziger_id) " +
                     "VALUES (" + adres.getAdresID() + ", '" + adres.getPostcode() + "', '" + adres.getHuisnummer() + "', '" + adres.getStraat() + "', '" + adres.getWoonplaats() + "', " + adres.getReiziger_id() + ");";
             myStmt.executeUpdate(sql);
@@ -58,9 +63,9 @@ public class AdresDAO {
         return true;
     }
 
-    public static boolean updateAdress(int aID, String pc, String hn, String str, String wp) {
+    public boolean updateAdress(int aID, String pc, String hn, String str, String wp) {
         try {
-            Statement myStmt = Connect.connect().createStatement();
+            Statement myStmt = connection.createStatement();
             String sql = "UPDATE adres SET " +
                     "postcode = '" + pc +
                     "', huisnummer = '" + hn +
@@ -76,9 +81,9 @@ public class AdresDAO {
         return true;
     }
 
-    public static boolean deleteAdress(int id) {
+    public boolean deleteAdress(int id) {
         try {
-            Statement myStmt = Connect.connect().createStatement();
+            Statement myStmt = connection.createStatement();
             String sql = "DELETE FROM adres WHERE reiziger_id = " + id;
             myStmt.executeUpdate(sql);
         } catch (Exception e) {

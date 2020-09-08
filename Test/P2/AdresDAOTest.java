@@ -2,40 +2,48 @@ package P2;
 
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class AdresDAOTest {
+    Connect connect = new Connect();
+    AdresDAO adresDAO = new AdresDAO(connect.getConnection());
+    ReizigerDAO reizigerDAO = new ReizigerDAO(connect.getConnection());
     Reiziger reiziger = new Reiziger(6, "S", "", "Waal", "1974-10-8");
     Adres adres = new Adres(6, "1234EF", "78I", "Tiendeweg", "Elfstad", reiziger.getId());
 
+    AdresDAOTest() throws SQLException {
+    }
+
     @Test
     void readAllAdres() {
-        assertTrue(AdresDAO.readAllAdres());
+        assertTrue(adresDAO.readAllAdres());
     }
 
     @Test
     void readByReiziger() {
-        assertTrue(AdresDAO.readByReiziger(2));
+        assertTrue(adresDAO.readByReiziger(2));
     }
 
     @Test
     void createAdress() {
-        ReizigerDAO.createReiziger(reiziger);
-        assertTrue(AdresDAO.createAdress(adres));
+        reizigerDAO.createReiziger(reiziger);
+        assertTrue(adresDAO.createAdress(adres));
     }
 
     @Test
     void updateAdress() {
-        assertTrue(AdresDAO.updateAdress(6, "1234EF", "78I", "Tiendeweg", "Elfdorp"));
+        assertTrue(adresDAO.updateAdress(6, "1234EF", "78I", "Tiendeweg", "Elfdorp"));
     }
 
     @Test
     void deleteAdress() {
-        assertTrue(AdresDAO.deleteAdress(6));
+        assertTrue(adresDAO.deleteAdress(6));
     }
 
     @Test
     void deleteReiziger() {
-        assertTrue(ReizigerDAO.deleteReiziger(6));
+        assertTrue(reizigerDAO.deleteReiziger(6, adresDAO));
     }
 }

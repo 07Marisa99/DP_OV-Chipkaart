@@ -2,15 +2,20 @@ package P2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class Connect {
-    protected static Connection connect() throws Exception {
+    private Connection connection;
+
+    public Connect() throws SQLException {
         String dbUrl = "jdbc:postgresql://localhost:5432/ovchip";
         String user = "postgres";
         String pass = "Hooibaal";
 
-        Connection myConn = DriverManager.getConnection(dbUrl, user, pass);
+        connection = DriverManager.getConnection(dbUrl, user, pass);
+    }
 
-        return myConn;
+    public Connection getConnection() {
+        return connection;
     }
 }
