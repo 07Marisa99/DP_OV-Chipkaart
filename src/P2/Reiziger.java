@@ -15,7 +15,7 @@ public class Reiziger {
     public Reiziger(int id, String vrl, String tus, String atn, String datum) {
         this.id = id;
         voorletters = vrl;
-        if (tus.trim() != "") {
+        if (tus.trim().equals("")) {
             tussenvoegsel = tus;
         }
         achternaam = atn;
@@ -40,7 +40,7 @@ public class Reiziger {
     }
 
     public void setTussenvoegsel(String tussenvoegsel) {
-        if (tussenvoegsel.trim() != "") {
+        if (tussenvoegsel.trim().equals("")) {
             this.tussenvoegsel = tussenvoegsel;
         } else {
             this.tussenvoegsel = null;
