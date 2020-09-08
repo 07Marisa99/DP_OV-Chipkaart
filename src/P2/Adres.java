@@ -10,16 +10,17 @@ public class Adres {
     private String straat;
     private String woonplaats;
     private int reiziger_id;
+    private Reiziger reiziger;
     private static ArrayList<Adres> adresList = new ArrayList<>();
 
-    public Adres(int aID, String pc, String hn, String str, String wp, int rID) {
+    public Adres(int aID, String pc, String hn, String str, String wp, Reiziger reiziger) {
         adresID = aID;
         postcode = pc;
         huisnummer = hn;
         straat = str;
         woonplaats = wp;
-        reiziger_id = rID;
-        adresList.add(this);
+        reiziger_id = reiziger.getId();
+        this.reiziger = reiziger;
     }
 
     public int getAdresID() {
@@ -46,16 +47,13 @@ public class Adres {
         return reiziger_id;
     }
 
-    public static String getAdresByReiziger_id(int id) {
-        for (Adres adres : adresList) {
-            if (adres.getReiziger_id() == id) {
-                return MessageFormat.format("Adres: {0} {1}, {2} {3}", adres.straat, adres.huisnummer, adres.postcode, adres.woonplaats);
-            }
-        } return "ADDRESS NOT FOUND";
+
+    public String toString(boolean check) {
+        return MessageFormat.format("Adres: {0} {1}, {2} {3}", straat, huisnummer, postcode, woonplaats);
     }
 
     @Override
     public String toString() {
-        return MessageFormat.format("{0}.\t {1} {2}, {3} {4}\n\t Wordt bewoond door: {5};", adresID, straat, huisnummer, postcode, woonplaats, Reiziger.getReizigerById(reiziger_id));
+        return MessageFormat.format("{0}.\t {1} {2}, {3} {4}\n\t Wordt bewoond door: {5};", adresID, straat, huisnummer, postcode, woonplaats, reiziger.toString(true));
     }
 }

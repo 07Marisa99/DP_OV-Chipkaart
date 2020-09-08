@@ -10,7 +10,7 @@ public class Reiziger {
     private String tussenvoegsel;
     private String achternaam;
     private java.sql.Date geboortedatum;
-    private static ArrayList<Reiziger> reizigerList = new ArrayList<>();
+    private Adres adres;
 
     public Reiziger(int id, String vrl, String tus, String atn, String datum) {
         this.id = id;
@@ -20,7 +20,10 @@ public class Reiziger {
         }
         achternaam = atn;
         geboortedatum = java.sql.Date.valueOf(datum);
-        reizigerList.add(this);
+    }
+
+    public void setAdres(Adres adres) {
+        this.adres = adres;
     }
 
     public int getId() {
@@ -63,24 +66,26 @@ public class Reiziger {
         return MessageFormat.format("{0} {1} {2}", voorletters, tussenvoegsel, achternaam);
     }
 
-    public static String getReizigerById(int id){
-        for(Reiziger reiziger : reizigerList) {
-            if (reiziger.id == id) {
-                if (reiziger.tussenvoegsel != null) {
-                    return MessageFormat.format("{0} {1} {2}", reiziger.voorletters, reiziger.tussenvoegsel, reiziger.achternaam);
-                } else {
-                    return MessageFormat.format("{0} {1}", reiziger.voorletters, reiziger.achternaam);
-                }
-            }
-        } return "REIZIGER NOT FOUND";
+    public String toString(boolean check) {
+        if (tussenvoegsel != null) {
+            return MessageFormat.format("{0} {1} {2}", voorletters, tussenvoegsel, achternaam);
+        } else {
+            return MessageFormat.format("{0} {1}", voorletters, achternaam);
+        }
     }
 
     @Override
     public String toString() {
-        if (this.tussenvoegsel != null) {
-            return MessageFormat.format("{0}.\t {1} {2} {3}\t: {4} \n\t Woont op {5};", id, voorletters, tussenvoegsel, achternaam, geboortedatum, Adres.getAdresByReiziger_id(id));
+        String adresString = "";
+        if (adres != null) {
+            adresString = adres.toString(true);
         } else {
-            return MessageFormat.format("{0}.\t {1} {2}\t: {3} \n\t Woont op {4};", id, voorletters, achternaam, geboortedatum, Adres.getAdresByReiziger_id(id));
+            adresString = "404, ADRESS NOT FOUND";
+        }
+        if (this.tussenvoegsel != null) {
+            return MessageFormat.format("{0}.\t {1} {2} {3}\t: {4} \n\t Woont op {5};", id, voorletters, tussenvoegsel, achternaam, geboortedatum, adresString);
+        } else {
+            return MessageFormat.format("{0}.\t {1} {2}\t: {3} \n\t Woont op {4};", id, voorletters, achternaam, geboortedatum, adresString);
         }
     }
 }

@@ -11,7 +11,7 @@ class AdresDAOTest {
     AdresDAO adresDAO = new AdresDAO(connect.getConnection());
     ReizigerDAO reizigerDAO = new ReizigerDAO(connect.getConnection());
     Reiziger reiziger = new Reiziger(6, "S", "", "Waal", "1974-10-8");
-    Adres adres = new Adres(6, "1234EF", "78I", "Tiendeweg", "Elfstad", reiziger.getId());
+    Adres adres = new Adres(6, "1234EF", "78I", "Tiendeweg", "Elfstad", reiziger);
 
     AdresDAOTest() throws SQLException {
     }

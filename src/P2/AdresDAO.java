@@ -3,6 +3,7 @@ package P2;
 import java.sql.*;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AdresDAO {
     private Connection connection;
@@ -21,7 +22,7 @@ public class AdresDAO {
 
     public boolean readAllAdres() {
         try {
-            ArrayList<String> adressen = new ArrayList<>();
+            List<String> adressen = new ArrayList<>();
             Statement myStmt = connection.createStatement();
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM adres;");
             while (myRs.next()) {
