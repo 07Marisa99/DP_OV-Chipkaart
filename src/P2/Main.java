@@ -16,17 +16,26 @@ public class Main {
 
         reiziger.setAdres(adres);
 
+        System.out.println();
+
         reizigerDAO.createReiziger(reiziger);
+
         adresDAO.createAdress(adres);
 
         System.out.println();
 
-        adresDAO.readAllAdres();
+        System.out.println(adresDAO.readAllAdres());
 
         System.out.println();
 
-        adresDAO.readByReiziger(1);
-        adresDAO.readByReiziger(6);
+        reizigerDAO.readAllReiziger();
+
+        System.out.println();
+
+        System.out.println(adresDAO.readByReiziger(1));
+        System.out.println(adresDAO.readByReiziger(6));
+
+        System.out.println();
 
         adresDAO.updateAdress(6, "1234EF", "78I", "Tiendeweg", "Elfdorp");
 

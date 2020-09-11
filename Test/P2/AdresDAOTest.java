@@ -3,6 +3,8 @@ package P2;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,12 +20,19 @@ class AdresDAOTest {
 
     @Test
     void readAllAdres() {
-        assertTrue(adresDAO.readAllAdres());
+        List list =  new ArrayList<>();
+        list.add("1.\t Visschersplein  37,\t 3511LX Utrecht;");
+        list.add("2.\t Jaarbeursplein 6A,\t 3521AL Utrecht;");
+        list.add("3.\t Stadsbrink 375,\t 6707AA Wageningen;");
+        list.add("4.\t Arnhemseweg 4,\t 3817CH Amersfoort;");
+        list.add("5.\t Vermeulenstraat  22,\t 3572WP Utrecht;");
+        assertEquals(list, adresDAO.readAllAdres());
     }
 
     @Test
     void readByReiziger() {
-        assertTrue(adresDAO.readByReiziger(2));
+        assertEquals("2.\t Jaarbeursplein 6A, 3521AL Utrecht\n" +
+                "\t Wordt bewoond door: NO REIZIGER FOUND;" ,adresDAO.readByReiziger(2).toString());
     }
 
     @Test

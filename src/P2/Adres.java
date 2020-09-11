@@ -1,7 +1,6 @@
 package P2;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 
 public class Adres {
     private int adresID;
@@ -11,7 +10,6 @@ public class Adres {
     private String woonplaats;
     private int reiziger_id;
     private Reiziger reiziger;
-    private static ArrayList<Adres> adresList = new ArrayList<>();
 
     public Adres(int aID, String pc, String hn, String str, String wp, Reiziger reiziger) {
         adresID = aID;
@@ -21,6 +19,15 @@ public class Adres {
         woonplaats = wp;
         reiziger_id = reiziger.getId();
         this.reiziger = reiziger;
+    }
+
+    public Adres(int aID, String pc, String hn, String str, String wp, int rID) {
+        adresID = aID;
+        postcode = pc;
+        huisnummer = hn;
+        straat = str;
+        woonplaats = wp;
+        reiziger_id = rID;
     }
 
     public int getAdresID() {
@@ -54,6 +61,10 @@ public class Adres {
 
     @Override
     public String toString() {
-        return MessageFormat.format("{0}.\t {1} {2}, {3} {4}\n\t Wordt bewoond door: {5};", adresID, straat, huisnummer, postcode, woonplaats, reiziger.toString(true));
+        if (reiziger != null) {
+            return MessageFormat.format("{0}.\t {1} {2}, {3} {4}\n\t Wordt bewoond door: {5};", adresID, straat, huisnummer, postcode, woonplaats, reiziger.toString(true));
+        } else {
+            return MessageFormat.format("{0}.\t {1} {2}, {3} {4}\n\t Wordt bewoond door: {5};", adresID, straat, huisnummer, postcode, woonplaats, "NO REIZIGER FOUND");
+        }
     }
 }

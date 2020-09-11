@@ -20,34 +20,31 @@ public class AdresDAO {
         return MessageFormat.format("{0}.\t {1} {2},\t {3} {4};", id, straat, huisnummer, postcode, woonplaats);
     }
 
-    public boolean readAllAdres() {
+    public List<String> readAllAdres() {
+        List<String> adressen = new ArrayList<>();
         try {
-            List<String> adressen = new ArrayList<>();
             Statement myStmt = connection.createStatement();
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM adres;");
             while (myRs.next()) {
                 adressen.add(stringify(myRs));
             }
-            System.out.println(adressen);
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
-        }
-        return true;
+        } return adressen;
     }
 
-    public boolean readByReiziger(int id) {
+    public Adres readByReiziger(int id) {
+        Adres adres = null;
         try {
             Statement myStmt = connection.createStatement();
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM adres WHERE reiziger_id = " + id);
             while (myRs.next()) {
-                System.out.println(stringify(myRs));
+                adres = new Adres(myRs.getInt("adres_id"), myRs.getString("postcode"), myRs.getString("huisnummer"), myRs.getString("straat"), myRs.getString("woonplaats"), myRs.getInt("reiziger_id"));
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
-        return true;
+        return adres;
     }
 
     public boolean createAdress(Adres adres) {
