@@ -111,7 +111,8 @@ public class Main {
 
         reizigerDAO.deleteReiziger(reiziger.getId(), adresDAO, ovChipkaartDAO);
         reizigerDAO.readAllReiziger();
-
+        System.out.println();
+        
         for (String ov : ovChipkaartDAO.readAllOVKaart()) {
             System.out.println(ov);
         }
