@@ -28,6 +28,7 @@ public class Adres {
         straat = str;
         woonplaats = wp;
         reiziger_id = rID;
+        reiziger = Reiziger.getReizigerById(rID);
     }
 
     public int getAdresID() {

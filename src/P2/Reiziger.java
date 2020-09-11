@@ -3,6 +3,7 @@ package P2;
 import java.sql.Date;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Reiziger {
     private int id;
@@ -11,6 +12,8 @@ public class Reiziger {
     private String achternaam;
     private java.sql.Date geboortedatum;
     private Adres adres;
+    private static List<Reiziger> reizigers = new ArrayList<>();
+    private List<OVChipkaart> ovChipkaarts = new ArrayList<>();
 
     public Reiziger(int id, String vrl, String tus, String atn, String datum) {
         this.id = id;
@@ -20,6 +23,7 @@ public class Reiziger {
         }
         achternaam = atn;
         geboortedatum = java.sql.Date.valueOf(datum);
+        reizigers.add(this);
     }
 
     public void setAdres(Adres adres) {
@@ -64,6 +68,25 @@ public class Reiziger {
 
     public String getNaam() {
         return MessageFormat.format("{0} {1} {2}", voorletters, tussenvoegsel, achternaam);
+    }
+
+    public List<OVChipkaart> getOvChipkaarts() {
+        return ovChipkaarts;
+    }
+
+    public void addOvChipkaart(OVChipkaart ovChipkaart) {
+        ovChipkaarts.add(ovChipkaart);
+    }
+    public void deleteOvChipkaart(OVChipkaart ovChipkaart) {
+        ovChipkaarts.remove(ovChipkaart);
+    }
+
+    public static Reiziger getReizigerById(int id) {
+        for (Reiziger reiziger : reizigers) {
+            if (reiziger.id == id) {
+                return reiziger;
+            }
+        } return null;
     }
 
     public String toString(boolean check) {
