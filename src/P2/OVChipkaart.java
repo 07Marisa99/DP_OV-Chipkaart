@@ -55,6 +55,26 @@ public class OVChipkaart {
         this.reiziger = reiziger;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setEnddate(Date enddate) {
+        this.enddate = enddate;
+    }
+
+    public void setKlasse(int klasse) {
+        this.klasse = klasse;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
+    }
+
     public void addProduct(Product product) {
         products.add(product);
     }

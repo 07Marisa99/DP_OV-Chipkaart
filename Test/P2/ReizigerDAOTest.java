@@ -11,6 +11,7 @@ class ReizigerDAOTest {
     Connect connect = new Connect();
     ReizigerDAO reizigerDAO = new ReizigerDAO(connect.getConnection());
     AdresDAO adresDAO = new AdresDAO(connect.getConnection());
+    OVChipkaartDAO ovChipkaartDAO = new OVChipkaartDAO(connect.getConnection());
 
     ReizigerDAOTest() throws SQLException {
     }
@@ -43,6 +44,6 @@ class ReizigerDAOTest {
 
     @Test
     void deleteReiziger() {
-        assertTrue(reizigerDAO.deleteReiziger(reiziger.getId(), adresDAO));
+        assertTrue(reizigerDAO.deleteReiziger(reiziger.getId(), adresDAO, ovChipkaartDAO));
     }
 }

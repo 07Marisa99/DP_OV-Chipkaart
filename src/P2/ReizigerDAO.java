@@ -104,9 +104,10 @@ public class ReizigerDAO {
             return false;
         } return true;
     }
-    public boolean deleteReiziger(int id, AdresDAO adresDAO) {
+    public boolean deleteReiziger(int id, AdresDAO adresDAO, OVChipkaartDAO ovChipkaartDAO) {
         try {
             adresDAO.deleteAdress(id);
+            ovChipkaartDAO.deleteAllOVChipkaart(id);
 
             Statement myStmt = connection.createStatement();
             String sql = "DELETE FROM reiziger WHERE reiziger_id = " + id;

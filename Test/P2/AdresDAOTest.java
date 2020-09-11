@@ -12,6 +12,7 @@ class AdresDAOTest {
     Connect connect = new Connect();
     AdresDAO adresDAO = new AdresDAO(connect.getConnection());
     ReizigerDAO reizigerDAO = new ReizigerDAO(connect.getConnection());
+    OVChipkaartDAO ovChipkaartDAO = new OVChipkaartDAO(connect.getConnection());
     Reiziger reiziger = new Reiziger(6, "S", "", "Waal", "1974-10-8");
     Adres adres = new Adres(6, "1234EF", "78I", "Tiendeweg", "Elfstad", reiziger);
 
@@ -53,6 +54,6 @@ class AdresDAOTest {
 
     @Test
     void deleteReiziger() {
-        assertTrue(reizigerDAO.deleteReiziger(6, adresDAO));
+        assertTrue(reizigerDAO.deleteReiziger(6, adresDAO, ovChipkaartDAO));
     }
 }

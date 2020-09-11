@@ -55,6 +55,21 @@ public class Adres {
         return reiziger_id;
     }
 
+    public void setHuisnummer(String huisnummer) {
+        this.huisnummer = huisnummer;
+    }
+
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
+    }
+
+    public void setStraat(String straat) {
+        this.straat = straat;
+    }
+
+    public void setWoonplaats(String woonplaats) {
+        this.woonplaats = woonplaats;
+    }
 
     public String toString(boolean check) {
         return MessageFormat.format("Adres: {0} {1}, {2} {3}", straat, huisnummer, postcode, woonplaats);

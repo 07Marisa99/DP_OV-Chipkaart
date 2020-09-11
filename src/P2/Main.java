@@ -27,6 +27,7 @@ public class Main {
         Reiziger reiziger = new Reiziger(6, "S", "", "Waal", "1974-10-8");
         Adres adres = new Adres(6, "1234EF", "78I", "Tiendeweg", "Elfstad", reiziger);
         OVChipkaart ovChipkaart = new OVChipkaart(15373, "2025-9-8", 2, 0.00, reiziger.getId(), reiziger);
+        OVChipkaart ovChipkaart2 = new OVChipkaart(15374, "2025-9-8", 2, 0.00, reiziger.getId(), reiziger);
 
         reiziger.setAdres(adres);
 
@@ -55,7 +56,14 @@ public class Main {
 
         System.out.println();
 
-        adresDAO.updateAdress(6, "1234EF", "78I", "Tiendeweg", "Elfdorp");
+        reiziger.setTussenvoegsel("de");
+        reizigerDAO.updateReiziger(reiziger.getId(), reiziger.getVoorletters(), reiziger.getTussenvoegsel(), reiziger.getAchternaam(), reiziger.getGeboortedatum());
+
+        adres.setWoonplaats("Elfdorp");
+        adresDAO.updateAdress(adres.getAdresID(), adres.getPostcode(), adres.getHuisnummer(), adres.getStraat(), adres.getWoonplaats());
+
+        ovChipkaart.setKlasse(1);
+        ovChipkaartDAO.updateOVChipkaart(ovChipkaart.getId(), ovChipkaart.getEnddate(), ovChipkaart.getKlasse(), ovChipkaart.getSaldo());
 
         adresDAO.readByReiziger(6);
 
@@ -70,8 +78,6 @@ public class Main {
 
         System.out.println();
 
-        reiziger.setTussenvoegsel("de");
-        reizigerDAO.updateReiziger(reiziger.getId(), reiziger.getVoorletters(), reiziger.getTussenvoegsel(), reiziger.getAchternaam(), reiziger.getGeboortedatum());
         reizigerDAO.readAllReiziger();
 
         System.out.println();
@@ -86,7 +92,28 @@ public class Main {
 
         System.out.println();
 
-        reizigerDAO.deleteReiziger(reiziger.getId(), adresDAO);
+        ovChipkaartDAO.deleteOVChipkaart(ovChipkaart.getId());
+
+        for (String ov : ovChipkaartDAO.readAllOVKaart()) {
+            System.out.println(ov);
+        }
+
+        System.out.println();
+
+        ovChipkaartDAO.createOVChipkaart(ovChipkaart);
+        ovChipkaartDAO.createOVChipkaart(ovChipkaart2);
+
+        for (String ov : ovChipkaartDAO.readAllOVKaart()) {
+            System.out.println(ov);
+        }
+
+        System.out.println();
+
+        reizigerDAO.deleteReiziger(reiziger.getId(), adresDAO, ovChipkaartDAO);
         reizigerDAO.readAllReiziger();
+
+        for (String ov : ovChipkaartDAO.readAllOVKaart()) {
+            System.out.println(ov);
+        }
     }
 }

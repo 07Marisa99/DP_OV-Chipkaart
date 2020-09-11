@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class OVChipkaartDAO {
@@ -64,15 +65,14 @@ public class OVChipkaartDAO {
         return true;
     }
 
-    public boolean updateOVChipkaart(int id, String enddate, int klasse, double saldo) {
+    public boolean updateOVChipkaart(int id, Date enddate, int klasse, double saldo) {
         try {
             Statement myStmt = connection.createStatement();
-            String sql = "UPDATE adres SET " +
-                    "kaart_nummer = '" + id +
-                    "', geldig_tot = '" + enddate +
+            String sql = "UPDATE ov_chipkaart SET " +
+                    "geldig_tot = '" + enddate +
                     "', klasse = '" + klasse +
                     "', saldo = '" + saldo +
-                    "' WHERE id = " + id + ";";
+                    "' WHERE kaart_nummer = " + id + ";";
 
             myStmt.executeUpdate(sql);
         } catch (Exception e) {
@@ -82,10 +82,22 @@ public class OVChipkaartDAO {
         return true;
     }
 
-    public boolean deleteAdress(int id) {
+    public boolean deleteOVChipkaart(int id) {
         try {
             Statement myStmt = connection.createStatement();
-            String sql = "DELETE FROM adres WHERE reiziger_id = " + id;
+            String sql = "DELETE FROM ov_chipkaart WHERE kaart_nummer = " + id;
+            myStmt.executeUpdate(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean deleteAllOVChipkaart(int id) {
+        try {
+            Statement myStmt = connection.createStatement();
+            String sql = "DELETE FROM ov_chipkaart WHERE reiziger_id = " + id;
             myStmt.executeUpdate(sql);
         } catch (Exception e) {
             e.printStackTrace();
