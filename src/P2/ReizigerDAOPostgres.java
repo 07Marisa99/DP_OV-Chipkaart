@@ -7,13 +7,15 @@ import java.util.List;
 
 public class ReizigerDAOPostgres implements ReizigerDAO {
     private Connection connection;
-    AdresDAOPostgres adresDAOPostgres = null;
-    OVChipkaartDAOPostgres ovChipkaartDAOPostgres = null;
+    AdresDAOPostgres adresDAOPostgres;
+    OVChipkaartDAOPostgres ovChipkaartDAOPostgres;
+    ProductDAOPostgres productDAOPostgres;
 
     public ReizigerDAOPostgres(Connection myConn) {
         connection = myConn;
         adresDAOPostgres = new AdresDAOPostgres(connection);
-        ovChipkaartDAOPostgres = new OVChipkaartDAOPostgres(connection);
+        productDAOPostgres = new ProductDAOPostgres(connection);
+        ovChipkaartDAOPostgres = new OVChipkaartDAOPostgres(connection, productDAOPostgres);
     }
 
     private Reiziger toReiziger(ResultSet myRs) throws SQLException {

@@ -11,9 +11,11 @@ import java.util.List;
 
 public class OVChipkaartDAOPostgres implements OVChipkaartDAO {
     private Connection connection;
+    private ProductDAOPostgres productDAOPostgres;
 
-    public OVChipkaartDAOPostgres(Connection myConn) {
+    public OVChipkaartDAOPostgres(Connection myConn, ProductDAOPostgres productDAOPostgres) {
         connection = myConn;
+        this.productDAOPostgres = productDAOPostgres;
     }
     private OVChipkaart toOVChip(ResultSet myRs, Reiziger reiziger) throws SQLException {
         int kaart_nummer = myRs.getInt("kaart_nummer");
@@ -24,6 +26,7 @@ public class OVChipkaartDAOPostgres implements OVChipkaartDAO {
         OVChipkaart ovChipkaart = null;
         if (reiziger.getId() == reiziger_id) {
             ovChipkaart = new OVChipkaart(kaart_nummer, geldig_tot, klasse, saldo, reiziger);
+            productDAOPostgres.readProductByOV(ovChipkaart);
         }
 //        return MessageFormat.format("{0}.\t {1} {2},\t {3} {4};", kaart_nummer, saldo, klasse, geldig_tot, reiziger_id);
         return ovChipkaart;
@@ -40,6 +43,7 @@ public class OVChipkaartDAOPostgres implements OVChipkaartDAO {
                     if (ovChipkaart != null) {
                         ovChipkaarts.add(ovChipkaart);
                         reiziger.addOvChipkaart(ovChipkaart);
+
                     }
                 }
             }

@@ -71,4 +71,14 @@ public class OVChipkaart {
     public void deleteProduct(Product product) {
         products.remove(product);
     }
+
+    @Override
+    public String toString() {
+        String string = "OV KAART: " + id + "\t";
+        for (Product product : products) {
+            string += product.getNaam();
+            string += ", ";
+        }
+        return string;
+    }
 }

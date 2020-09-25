@@ -12,7 +12,7 @@ public class Reiziger {
     private String achternaam;
     private java.sql.Date geboortedatum;
     private Adres adres;
-    private List<OVChipkaart> ovChipkaartPostgres = new ArrayList<>();
+    private List<OVChipkaart> ovChipkaarts = new ArrayList<>();
 
     public Reiziger(int id, String vrl, String tus, String atn, String datum) {
         this.id = id;
@@ -71,14 +71,14 @@ public class Reiziger {
     }
 
     public List<OVChipkaart> getOvChipkaarts() {
-        return ovChipkaartPostgres;
+        return ovChipkaarts;
     }
 
     public void addOvChipkaart(OVChipkaart ovChipkaart) {
-        this.ovChipkaartPostgres.add(ovChipkaart);
+        this.ovChipkaarts.add(ovChipkaart);
     }
     public void deleteOvChipkaart(OVChipkaart ovChipkaart) {
-        this.ovChipkaartPostgres.remove(ovChipkaart);
+        this.ovChipkaarts.remove(ovChipkaart);
     }
 
     public String toString(boolean check) {
@@ -91,16 +91,21 @@ public class Reiziger {
 
     @Override
     public String toString() {
-        String adresString = "";
+        String reizigerString;
+        String adresString;
         if (adres != null) {
             adresString = adres.toString(true);
         } else {
             adresString = "404, ADRESS NOT FOUND";
         }
         if (this.tussenvoegsel != null) {
-            return MessageFormat.format("\n{0}.\t {1} {2} {3}\t: {4} \n\t Woont op {5};", id, voorletters, tussenvoegsel, achternaam, geboortedatum, adresString);
+            reizigerString = MessageFormat.format("\n{0}.\t {1} {2} {3}\t: {4} \n\t Woont op {5};", id, voorletters, tussenvoegsel, achternaam, geboortedatum, adresString);
         } else {
-            return MessageFormat.format("\n{0}.\t {1} {2}\t: {3} \n\t Woont op {4};", id, voorletters, achternaam, geboortedatum, adresString);
+            reizigerString = MessageFormat.format("\n{0}.\t {1} {2}\t: {3} \n\t Woont op {4};", id, voorletters, achternaam, geboortedatum, adresString) + "\n";
         }
+        for (OVChipkaart ovChipkaart : ovChipkaarts) {
+            reizigerString += "\n\t " + ovChipkaart;
+        }
+        return reizigerString;
     }
 }
