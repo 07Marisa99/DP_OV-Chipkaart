@@ -109,14 +109,14 @@ public class ProductDAOPostgres implements ProductDAO{
     @Override
     public boolean deleteProduct(Product product) {
         try {
-//            for (OVChipkaart ovChipkaart : product.getOvChipkaarts()) {
-//                deleteProductFromOV(product, ovChipkaart);
-//            }
             Statement myStmt = connection.createStatement();
             String sql = "DELETE FROM ov_chipkaart_product WHERE product_nummer = " + product.getProduct_nummer() +";";
             myStmt.executeUpdate(sql);
             sql = "DELETE FROM product WHERE product_nummer = " + product.getProduct_nummer() +";";
             myStmt.executeUpdate(sql);
+            for (OVChipkaart ovChipkaart : product.getOvChipkaarts()) {
+                deleteProductFromOV(product, ovChipkaart);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } return true;
@@ -124,10 +124,10 @@ public class ProductDAOPostgres implements ProductDAO{
     @Override
     public boolean deleteProductFromOV(Product product, OVChipkaart ovChipkaart) {
         try {
-            product.deleteProductFromOV(ovChipkaart);
             Statement myStmt = connection.createStatement();
             String sql = "DELETE FROM ov_chipkaart_product WHERE product_nummer =" + product.getProduct_nummer() + " AND kaart_nummer = " + ovChipkaart.getId() + ";";
             myStmt.executeUpdate(sql);
+            product.deleteProductFromOV(ovChipkaart);
         } catch (Exception e) {
             e.printStackTrace();
         } return true;
