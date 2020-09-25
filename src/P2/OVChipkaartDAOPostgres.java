@@ -52,7 +52,7 @@ public class OVChipkaartDAOPostgres implements OVChipkaartDAO {
         List<OVChipkaart> ovChipkaarts = new ArrayList<>();
         try {
             Statement myStmt = connection.createStatement();
-            ResultSet myRs = myStmt.executeQuery("SELECT * FROM adres WHERE reiziger_id = " + reiziger.getId());
+            ResultSet myRs = myStmt.executeQuery("SELECT * FROM ov_chipkaart WHERE reiziger_id = " + reiziger.getId() + ";");
             while (myRs.next()) {
                 ovChipkaarts.add(toOVChip(myRs, reiziger));
             }

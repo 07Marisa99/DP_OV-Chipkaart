@@ -51,6 +51,9 @@ public class AdresDAOPostgres implements AdresDAO {
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM adres WHERE reiziger_id = " + reiziger.getId());
             while (myRs.next()) {
                 adres = toAdres(myRs, reiziger);
+                if (adres != null) {
+                    reiziger.setAdres(adres);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

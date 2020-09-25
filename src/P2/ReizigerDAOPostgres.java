@@ -7,9 +7,13 @@ import java.util.List;
 
 public class ReizigerDAOPostgres implements ReizigerDAO {
     private Connection connection;
+    AdresDAOPostgres adresDAOPostgres = null;
+    OVChipkaartDAOPostgres ovChipkaartDAOPostgres = null;
 
     public ReizigerDAOPostgres(Connection myConn) {
         connection = myConn;
+        adresDAOPostgres = new AdresDAOPostgres(connection);
+        ovChipkaartDAOPostgres = new OVChipkaartDAOPostgres(connection);
     }
 
     private Reiziger toReiziger(ResultSet myRs) throws SQLException {
@@ -24,6 +28,8 @@ public class ReizigerDAOPostgres implements ReizigerDAO {
         }
 
         Reiziger reiziger = new Reiziger(id, vrlt, tus, anm, dat);
+        adresDAOPostgres.readByReiziger(reiziger);
+        ovChipkaartDAOPostgres.readByReiziger(reiziger);
 
 //        if (tus != null) {
 //            System.out.println(MessageFormat.format("{0}.\t {1} {2} {3}\t: {4};", id, vrlt, tus, anm, dat));
