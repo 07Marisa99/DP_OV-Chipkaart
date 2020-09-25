@@ -27,9 +27,11 @@ public class ProductDAOPostgres implements ProductDAO{
         double prijs = productRs.getDouble("prijs");
 
         Product product = null;
-        if (ovChipkaart.getId() == kaart_nummer) {
-            if (product_Nummer == product_nummer) {
-                product = new Product(product_Nummer, naam, beschrijving, prijs, status, last_update, ovChipkaart);
+        if (product_Nummer == product_nummer) {
+            product = new Product(product_Nummer, naam, beschrijving, prijs, status, last_update);
+
+            if (ovChipkaart.getId() == kaart_nummer) {
+                product.addToOV(ovChipkaart);
             }
         }
         return product;
@@ -106,6 +108,28 @@ public class ProductDAOPostgres implements ProductDAO{
 
     @Override
     public boolean deleteProduct(Product product) {
-        return false;
+        try {
+//            for (OVChipkaart ovChipkaart : product.getOvChipkaarts()) {
+//                deleteProductFromOV(product, ovChipkaart);
+//            }
+            Statement myStmt = connection.createStatement();
+            String sql = "DELETE FROM ov_chipkaart_product WHERE product_nummer = " + product.getProduct_nummer() +";";
+            myStmt.executeUpdate(sql);
+            sql = "DELETE FROM product WHERE product_nummer = " + product.getProduct_nummer() +";";
+            myStmt.executeUpdate(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } return true;
+    }
+    @Override
+    public boolean deleteProductFromOV(Product product, OVChipkaart ovChipkaart) {
+        try {
+            product.deleteProductFromOV(ovChipkaart);
+            Statement myStmt = connection.createStatement();
+            String sql = "DELETE FROM ov_chipkaart_product WHERE product_nummer =" + product.getProduct_nummer() + " AND kaart_nummer = " + ovChipkaart.getId() + ";";
+            myStmt.executeUpdate(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } return true;
     }
 }

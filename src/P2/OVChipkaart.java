@@ -81,4 +81,8 @@ public class OVChipkaart {
         }
         return string;
     }
+
+    public List<Product> getProducts() {
+        return products;
+    }
 }

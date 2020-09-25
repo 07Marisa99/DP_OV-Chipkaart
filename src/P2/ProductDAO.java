@@ -8,4 +8,5 @@ public interface ProductDAO {
     boolean createProduct(Product product);
     boolean updateProduct(Product product);
     boolean deleteProduct(Product product);
+    boolean deleteProductFromOV(Product product, OVChipkaart ovChipkaart);
 }
