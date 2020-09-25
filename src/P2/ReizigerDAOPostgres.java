@@ -7,9 +7,9 @@ import java.util.List;
 
 public class ReizigerDAOPostgres implements ReizigerDAO {
     private Connection connection;
-    AdresDAOPostgres adresDAOPostgres;
-    OVChipkaartDAOPostgres ovChipkaartDAOPostgres;
-    ProductDAOPostgres productDAOPostgres;
+    private AdresDAOPostgres adresDAOPostgres;
+    private OVChipkaartDAOPostgres ovChipkaartDAOPostgres;
+    private ProductDAOPostgres productDAOPostgres;
 
     public ReizigerDAOPostgres(Connection myConn) {
         connection = myConn;

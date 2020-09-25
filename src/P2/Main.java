@@ -9,5 +9,7 @@ public class Main {
         ReizigerDAOPostgres reizigerDAOPostgres = new ReizigerDAOPostgres(connect.getConnection());
         List<Reiziger> reizigers = reizigerDAOPostgres.readAllReiziger();
         System.out.println(reizigers);
+        System.out.println();
+        System.out.println(reizigerDAOPostgres.readReizigerByID(2));
     }
 }
