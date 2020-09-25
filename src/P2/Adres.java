@@ -8,7 +8,6 @@ public class Adres {
     private String huisnummer;
     private String straat;
     private String woonplaats;
-    private int reiziger_id;
     private Reiziger reiziger;
 
     public Adres(int aID, String pc, String hn, String str, String wp, Reiziger reiziger) {
@@ -17,18 +16,11 @@ public class Adres {
         huisnummer = hn;
         straat = str;
         woonplaats = wp;
-        reiziger_id = reiziger.getId();
         this.reiziger = reiziger;
     }
 
-    public Adres(int aID, String pc, String hn, String str, String wp, int rID) {
-        adresID = aID;
-        postcode = pc;
-        huisnummer = hn;
-        straat = str;
-        woonplaats = wp;
-        reiziger_id = rID;
-        reiziger = Reiziger.getReizigerById(rID);
+    public Reiziger getReiziger() {
+        return reiziger;
     }
 
     public int getAdresID() {
@@ -49,10 +41,6 @@ public class Adres {
 
     public String getWoonplaats() {
         return woonplaats;
-    }
-
-    public int getReiziger_id() {
-        return reiziger_id;
     }
 
     public void setHuisnummer(String huisnummer) {
@@ -78,9 +66,9 @@ public class Adres {
     @Override
     public String toString() {
         if (reiziger != null) {
-            return MessageFormat.format("{0}.\t {1} {2}, {3} {4}\n\t Wordt bewoond door: {5};", adresID, straat, huisnummer, postcode, woonplaats, reiziger.toString(true));
+            return MessageFormat.format("\n{0}.\t {1} {2}, {3} {4}\n\t Wordt bewoond door: {5};", adresID, straat, huisnummer, postcode, woonplaats, reiziger.toString(true));
         } else {
-            return MessageFormat.format("{0}.\t {1} {2}, {3} {4}\n\t Wordt bewoond door: {5};", adresID, straat, huisnummer, postcode, woonplaats, "NO REIZIGER FOUND");
+            return MessageFormat.format("\n{0}.\t {1} {2}, {3} {4}\n\t Wordt bewoond door: {5};", adresID, straat, huisnummer, postcode, woonplaats, "NO REIZIGER FOUND");
         }
     }
 }

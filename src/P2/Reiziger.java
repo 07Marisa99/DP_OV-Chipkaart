@@ -12,18 +12,18 @@ public class Reiziger {
     private String achternaam;
     private java.sql.Date geboortedatum;
     private Adres adres;
-    private static List<Reiziger> reizigers = new ArrayList<>();
-    private List<OVChipkaart> ovChipkaarts = new ArrayList<>();
+    private List<OVChipkaart> ovChipkaartPostgres = new ArrayList<>();
 
     public Reiziger(int id, String vrl, String tus, String atn, String datum) {
         this.id = id;
         voorletters = vrl;
-        if (tus.trim().equals("")) {
+        if (tus.trim().equals("") || tus == null) {
+            tussenvoegsel = "";
+        } else {
             tussenvoegsel = tus;
         }
         achternaam = atn;
         geboortedatum = java.sql.Date.valueOf(datum);
-        reizigers.add(this);
     }
 
     public void setAdres(Adres adres) {
@@ -71,22 +71,14 @@ public class Reiziger {
     }
 
     public List<OVChipkaart> getOvChipkaarts() {
-        return ovChipkaarts;
+        return ovChipkaartPostgres;
     }
 
     public void addOvChipkaart(OVChipkaart ovChipkaart) {
-        ovChipkaarts.add(ovChipkaart);
+        this.ovChipkaartPostgres.add(ovChipkaart);
     }
     public void deleteOvChipkaart(OVChipkaart ovChipkaart) {
-        ovChipkaarts.remove(ovChipkaart);
-    }
-
-    public static Reiziger getReizigerById(int id) {
-        for (Reiziger reiziger : reizigers) {
-            if (reiziger.id == id) {
-                return reiziger;
-            }
-        } return null;
+        this.ovChipkaartPostgres.remove(ovChipkaart);
     }
 
     public String toString(boolean check) {
@@ -106,9 +98,9 @@ public class Reiziger {
             adresString = "404, ADRESS NOT FOUND";
         }
         if (this.tussenvoegsel != null) {
-            return MessageFormat.format("{0}.\t {1} {2} {3}\t: {4} \n\t Woont op {5};", id, voorletters, tussenvoegsel, achternaam, geboortedatum, adresString);
+            return MessageFormat.format("\n{0}.\t {1} {2} {3}\t: {4} \n\t Woont op {5};", id, voorletters, tussenvoegsel, achternaam, geboortedatum, adresString);
         } else {
-            return MessageFormat.format("{0}.\t {1} {2}\t: {3} \n\t Woont op {4};", id, voorletters, achternaam, geboortedatum, adresString);
+            return MessageFormat.format("\n{0}.\t {1} {2}\t: {3} \n\t Woont op {4};", id, voorletters, achternaam, geboortedatum, adresString);
         }
     }
 }
