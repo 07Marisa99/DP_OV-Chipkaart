@@ -27,6 +27,18 @@ public class Product {
         return ovChipkaarts;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getProduct_nummer() {
+        return product_nummer;
+    }
+
     public void addOVChipkaart(OVChipkaart ovChipkaart) {
         ovChipkaarts.add(ovChipkaart);
         ovChipkaart.addProduct(this);
@@ -54,5 +66,13 @@ public class Product {
 
     public void setPrijs(double prijs) {
         this.prijs = prijs;
+    }
+
+    public String getLast_update() {
+        return last_update;
+    }
+
+    public void setLast_update(String last_update) {
+        this.last_update = last_update;
     }
 }

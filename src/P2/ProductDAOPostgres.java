@@ -81,6 +81,21 @@ public class ProductDAOPostgres implements ProductDAO{
 
     @Override
     public boolean createProduct(Product product) {
+        try {
+            Statement myStmt = connection.createStatement();
+                String sql = "INSERT INTO product (product_nummer, naam, beschrijving, prijs) " +
+                    "VALUES (" + product.getProduct_nummer() + ", '" + product.getNaam() + "', '" + product.getBeschrijving() + "', '" + product.getPrijs() + "');";
+            myStmt.executeUpdate(sql);
+            for (OVChipkaart ovChipkaart : product.getOvChipkaarts()) {
+                sql = "INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer, status, last_update)" +
+                        "VALUES (" + ovChipkaart.getId() + ", '" + product.getProduct_nummer() + "', '" + product.getStatus() + "', '" + product.getLast_update() + "');";
+                myStmt.executeUpdate(sql);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
         return false;
     }
 
