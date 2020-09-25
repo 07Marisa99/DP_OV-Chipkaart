@@ -115,10 +115,16 @@ public class ProductDAOPostgres implements ProductDAO{
             sql = "DELETE FROM product WHERE product_nummer = " + product.getProduct_nummer() +";";
             myStmt.executeUpdate(sql);
             for (OVChipkaart ovChipkaart : product.getOvChipkaarts()) {
-                deleteProductFromOV(product, ovChipkaart);
+                if (ovChipkaart.getProducts().contains(product) || product.getOvChipkaarts().contains(ovChipkaart)) {
+                    System.out.println(ovChipkaart.getProducts().contains(product));
+                    System.out.println(product.getOvChipkaarts().contains(ovChipkaart));
+                    System.out.println(ovChipkaart);
+                    deleteProductFromOV(product, ovChipkaart);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         } return true;
     }
     @Override

@@ -82,6 +82,7 @@ public class Product {
     public void deleteProductFromOV(OVChipkaart ovChipkaart) {
         if (ovChipkaart.getProducts().contains(this)) {
             ovChipkaart.getProducts().remove(this);
+        } if (ovChipkaarts.contains(ovChipkaart)) {
             ovChipkaarts.remove(ovChipkaart);
         }
     }
