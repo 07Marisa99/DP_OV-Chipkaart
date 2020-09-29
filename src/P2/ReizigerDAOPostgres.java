@@ -1,5 +1,7 @@
 package P2;
 
+import P1.MainFuncties;
+
 import java.sql.*;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -10,12 +12,22 @@ public class ReizigerDAOPostgres implements ReizigerDAO {
     private AdresDAOPostgres adresDAOPostgres;
     private OVChipkaartDAOPostgres ovChipkaartDAOPostgres;
     private ProductDAOPostgres productDAOPostgres;
+    private MainFuncties mainFuncties;
 
-    public ReizigerDAOPostgres(Connection myConn) {
+    public ReizigerDAOPostgres(Connection myConn, MainFuncties mainFuncties) {
         connection = myConn;
-        adresDAOPostgres = new AdresDAOPostgres(connection);
-        productDAOPostgres = new ProductDAOPostgres(connection);
-        ovChipkaartDAOPostgres = new OVChipkaartDAOPostgres(connection, productDAOPostgres);
+        adresDAOPostgres = new AdresDAOPostgres(connection, mainFuncties, this);
+        productDAOPostgres = new ProductDAOPostgres(connection, mainFuncties);
+        ovChipkaartDAOPostgres = new OVChipkaartDAOPostgres(connection, productDAOPostgres, this, mainFuncties);
+        this.mainFuncties = mainFuncties;
+    }
+
+    private Reiziger exists(int reiziger_id) {
+        for (Reiziger reiziger : mainFuncties.getReizigers()) {
+            if (reiziger_id == reiziger.getId()) {
+                return reiziger;
+            }
+        } return null;
     }
 
     private Reiziger toReiziger(ResultSet myRs) throws SQLException {
@@ -28,11 +40,18 @@ public class ReizigerDAOPostgres implements ReizigerDAO {
         if (tus == null) {
             tus = "";
         }
-
-        Reiziger reiziger = new Reiziger(id, vrlt, tus, anm, dat);
-        adresDAOPostgres.readByReiziger(reiziger);
-        ovChipkaartDAOPostgres.readByReiziger(reiziger);
-
+        Reiziger reiziger;
+        if (exists(id) == null) {
+            reiziger = new Reiziger(id, vrlt, tus, anm, dat);
+            adresDAOPostgres.readByReiziger(reiziger);
+            ovChipkaartDAOPostgres.readByReiziger(reiziger);
+            mainFuncties.addReiziger(reiziger);
+        } else {
+            reiziger = exists(id);
+            reiziger.setVoorletters(vrlt);
+            reiziger.setTussenvoegsel(tus);
+            reiziger.setAchternaam(anm);
+        }
 //        if (tus != null) {
 //            System.out.println(MessageFormat.format("{0}.\t {1} {2} {3}\t: {4};", id, vrlt, tus, anm, dat));
 //        } else {
@@ -79,8 +98,8 @@ public class ReizigerDAOPostgres implements ReizigerDAO {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return reizigers;
-        } return reizigers;
+        }
+        return mainFuncties.getReizigers();
     }
     public boolean createReiziger(Reiziger reiziger) {
         try {
@@ -101,21 +120,22 @@ public class ReizigerDAOPostgres implements ReizigerDAO {
             return false;
         } return true;
     }
-    public boolean updateReiziger(int getId, String getVoorletters, String getTussenvoegsel, String getAchternaam, Date getGeboortedatum) {
+    public boolean updateReiziger(Reiziger reiziger) {
         try {
+
             Statement myStmt = connection.createStatement();
 
             String sql = "UPDATE reiziger SET " +
-                    "voorletters = '" + getVoorletters + "', ";
+                    "voorletters = '" + reiziger.getVoorletters() + "', ";
 
-            if (getTussenvoegsel!= null) {
-                sql += "tussenvoegsel = '" + getTussenvoegsel + "', ";
+            if (reiziger.getTussenvoegsel()!= null) {
+                sql += "tussenvoegsel = '" + reiziger.getTussenvoegsel() + "', ";
             } else {
                 sql += "tussenvoegsel = " + null + ", ";
             }
-            sql += "achternaam = '" + getAchternaam + "', " +
-                    "geboortedatum = '" + getGeboortedatum + "'" +
-                    "WHERE reiziger_id = " + getId +";";
+            sql += "achternaam = '" + reiziger.getAchternaam() + "', " +
+                    "geboortedatum = '" + reiziger.getGeboortedatum() + "'" +
+                    "WHERE reiziger_id = " + reiziger.getId() +";";
 
             myStmt.executeUpdate(sql);
 
@@ -124,13 +144,10 @@ public class ReizigerDAOPostgres implements ReizigerDAO {
             return false;
         } return true;
     }
-    public boolean deleteReiziger(int id, AdresDAOPostgres adresDAOPostgres, OVChipkaartDAOPostgres ovChipkaartDAOPostgres) {
+    public boolean deleteReiziger(Reiziger reiziger) {
         try {
-            adresDAOPostgres.deleteAdress(id);
-            ovChipkaartDAOPostgres.deleteAllOVChipkaart(id);
-
             Statement myStmt = connection.createStatement();
-            String sql = "DELETE FROM reiziger WHERE reiziger_id = " + id;
+            String sql = "DELETE FROM reiziger WHERE reiziger_id = " + reiziger.getId();
             myStmt.executeUpdate(sql);
 
         } catch (Exception e) {

@@ -11,6 +11,7 @@ public class Product {
     private String status;
     private String last_update;
     private List<OVChipkaart> ovChipkaarts = new ArrayList<>();
+    private static List<Product> products = new ArrayList<>();
 
     public Product(int product_nummer, String naam, String beschrijving, double prijs, String status, String last_update) {
         this.product_nummer = product_nummer;
@@ -19,6 +20,11 @@ public class Product {
         this.prijs = prijs;
         this.status = status;
         this.last_update = last_update;
+        products.add(this);
+    }
+
+    public static List<Product> getProducts() {
+        return products;
     }
 
     public void addToOV(OVChipkaart ovChipkaart) {
@@ -84,5 +90,12 @@ public class Product {
             ovChipkaart.getProducts().remove(this);
             ovChipkaarts.remove(ovChipkaart);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "\tproduct_nummer=" + product_nummer +
+                "\n\tov_chipkaart=" + ovChipkaarts +
+                "\n\tbeschrijving=" + beschrijving +"\n";
     }
 }

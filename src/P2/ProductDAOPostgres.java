@@ -1,17 +1,32 @@
 package P2;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import P1.MainFuncties;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDAOPostgres implements ProductDAO{
     private Connection connection;
+    private OVChipkaartDAOPostgres ovChipkaartDAOPostgres;
+    private MainFuncties mainFuncties;
 
-    public ProductDAOPostgres(Connection myConn) {
+
+    public ProductDAOPostgres(Connection myConn, MainFuncties mainFuncties) {
         connection = myConn;
+        this.mainFuncties = mainFuncties;
+    }
+
+    public void setOvChipkaartDAOPostgres(OVChipkaartDAOPostgres ovChipkaartDAOPostgres) {
+        this.ovChipkaartDAOPostgres = ovChipkaartDAOPostgres;
+    }
+
+    private Product exists(int productId) {
+        for (Product product : mainFuncties.getProducts()) {
+            if (product.getProduct_nummer() == productId) {
+                return product;
+            }
+        } return null;
     }
 
     private Product toProduct(ResultSet productRs, ResultSet OVProduct, OVChipkaart ovChipkaart) throws SQLException {
@@ -27,17 +42,24 @@ public class ProductDAOPostgres implements ProductDAO{
         double prijs = productRs.getDouble("prijs");
 
         Product product = null;
-        if (product_Nummer == product_nummer) {
-            product = new Product(product_Nummer, naam, beschrijving, prijs, status, last_update);
-
-            if (ovChipkaart.getId() == kaart_nummer) {
-                product.addToOV(ovChipkaart);
+        if (exists(product_nummer) == null) {
+            if (product_Nummer == product_nummer) {
+                product = new Product(product_Nummer, naam, beschrijving, prijs, status, last_update);
+                if (ovChipkaart.getId() == kaart_nummer) {
+                    product.addToOV(ovChipkaart);
+                    mainFuncties.addProduct(product);
+                }
             }
-        }
-        return product;
+        } else {
+            product = exists(product_nummer);
+            product.setBeschrijving(beschrijving);
+            product.setNaam(naam);
+            product.setPrijs(prijs);
+        } return product;
     }
     @Override
-    public List<Product> readAllProducts(List<OVChipkaart> ovChipkaarts) {
+    public List<Product> readAllProducts() {
+        List<OVChipkaart> ovChipkaarts = ovChipkaartDAOPostgres.readAllOVKaart();
         List<Product> products = new ArrayList<>();
         try {
             Statement myStmt = connection.createStatement();
@@ -47,16 +69,15 @@ public class ProductDAOPostgres implements ProductDAO{
                 ResultSet OVProduct = myStmt2.executeQuery("SELECT * FROM ov_chipkaart_product;");
                 while (OVProduct.next()) {
                     for (OVChipkaart ovChipkaart : ovChipkaarts) {
-                        Product product = toProduct(productRs, OVProduct, ovChipkaart);
-                        if (product != null) {
-                            products.add(product);
-                        }
+                        toProduct(productRs, OVProduct, ovChipkaart);
+                        products.add(toProduct(productRs, OVProduct, ovChipkaart));
                     }
                 }
             }
         } catch (Exception e) {
-
-        } return products;
+            e.printStackTrace();
+        }
+        return mainFuncties.getProducts();
     }
 
     @Override
@@ -69,16 +90,13 @@ public class ProductDAOPostgres implements ProductDAO{
                 Statement myStmt2 = connection.createStatement();
                 ResultSet OVProduct = myStmt2.executeQuery("SELECT * FROM ov_chipkaart_product;");
                 while (OVProduct.next()) {
-                    Product product = toProduct(productRs, OVProduct, ovChipkaart);
-                    if (product != null) {
-                        products.add(product);
-
-                    }
+                    toProduct(productRs, OVProduct, ovChipkaart);
+                    products.add(toProduct(productRs, OVProduct, ovChipkaart));
                 }
             }
         } catch (Exception e) {
-
-        } return products;
+            e.printStackTrace();
+        } return ovChipkaart.getProducts();
     }
 
     @Override
@@ -88,10 +106,13 @@ public class ProductDAOPostgres implements ProductDAO{
                 String sql = "INSERT INTO product (product_nummer, naam, beschrijving, prijs) " +
                     "VALUES (" + product.getProduct_nummer() + ", '" + product.getNaam() + "', '" + product.getBeschrijving() + "', '" + product.getPrijs() + "');";
             myStmt.executeUpdate(sql);
-            for (OVChipkaart ovChipkaart : product.getOvChipkaarts()) {
-                sql = "INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer, status, last_update)" +
-                        "VALUES (" + ovChipkaart.getId() + ", '" + product.getProduct_nummer() + "', '" + product.getStatus() + "', '" + product.getLast_update() + "');";
-                myStmt.executeUpdate(sql);
+            if (mainFuncties.getOvChipkaarts().size() != 0) {
+                for (OVChipkaart ovChipkaart : product.getOvChipkaarts()) {
+                    sql = "INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer, status, last_update)" +
+                            "VALUES (" + ovChipkaart.getId() + ", '" + product.getProduct_nummer() + "', '" + product.getStatus() + "', '" + product.getLast_update() + "');";
+                    myStmt.executeUpdate(sql);
+                    System.out.println(sql);
+                }
             }
 
         } catch (Exception e) {
@@ -103,7 +124,29 @@ public class ProductDAOPostgres implements ProductDAO{
 
     @Override
     public boolean updateProduct(Product product) {
-        return false;
+        try {
+//            int kaart_nummer = OVProduct.getInt("kaart_nummer");
+//            int product_Nummer = OVProduct.getInt("product_nummer");
+//            String status = OVProduct.getString("status");
+//            String last_update = OVProduct.getString("last_update");
+//
+//            int product_nummer = productRs.getInt("product_nummer");
+//            String naam = productRs.getString("naam");
+//            String beschrijving = productRs.getString("beschrijving");
+//            double prijs = productRs.getDouble("prijs");
+
+            PreparedStatement myStmt = connection.prepareStatement("UPDATE product SET naam = ?, beschrijving = ?, prijs = ? WHERE product_nummer = ?;");
+            myStmt.setString(1, product.getNaam());
+            myStmt.setString(2, product.getBeschrijving());
+            myStmt.setDouble(3, product.getPrijs());
+            myStmt.setInt(4, product.getProduct_nummer());
+
+            myStmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -117,10 +160,15 @@ public class ProductDAOPostgres implements ProductDAO{
             int i1 = product.getOvChipkaarts().size();
             int i2 = 0;
             while (i1 > i2) {
-                if (product.getOvChipkaarts().get(i2).getProducts().contains(product) || product.getOvChipkaarts().contains(product.getOvChipkaarts().get(i2))) {
-                    deleteProductFromOV(product, product.getOvChipkaarts().get(i2));
-                    i2++;
+                if (i1 >= product.getOvChipkaarts().size()) {
+                    if (product.getOvChipkaarts().get(i2).getProducts().contains(product) || product.getOvChipkaarts().contains(product.getOvChipkaarts().get(i2))) {
+                        mainFuncties.getProducts().remove(product);
+                        deleteProductFromOV(product, product.getOvChipkaarts().get(i2));
+                    } else {
+                        i2++;
+                    }
                 }
+                break;
             }
         } catch (Exception e) {
             e.printStackTrace();

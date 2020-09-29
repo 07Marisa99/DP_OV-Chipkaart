@@ -8,6 +8,6 @@ public interface ReizigerDAO {
     List<Reiziger> readReizigerByGebDatum(Date gebDatum);
     List<Reiziger> readAllReiziger();
     boolean createReiziger(Reiziger reiziger);
-    boolean updateReiziger(int getId, String getVoorletters, String getTussenvoegsel, String getAchternaam, Date getGeboortedatum);
-    boolean deleteReiziger(int id, AdresDAOPostgres adresDAOPostgres, OVChipkaartDAOPostgres ovChipkaartDAOPostgres);
+    boolean updateReiziger(Reiziger reiziger);
+    boolean deleteReiziger(Reiziger reiziger);
 }

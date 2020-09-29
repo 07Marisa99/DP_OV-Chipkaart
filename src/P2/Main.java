@@ -1,37 +1,53 @@
 package P2;
 
-import java.util.List;
+import P1.MainFuncties;
+
+//  ik houd nu lijstjes bij in een externe klasse zodat ik op geen moment een object aanmaak wat al bestaat.
+//  misschien niet helemaal de juiste manier maar ik kon niks beters bedenken
 
 public class Main {
+
     public static void main(String[] args) throws Exception {
+        MainFuncties mainFuncties = new MainFuncties();
         Connect connect = new Connect();
 
-        ReizigerDAOPostgres reizigerDAOPostgres = new ReizigerDAOPostgres(connect.getConnection());
-        ProductDAOPostgres productDAOPostgres = new ProductDAOPostgres(connect.getConnection());
-        OVChipkaartDAOPostgres ovChipkaartDAOPostgres = new OVChipkaartDAOPostgres(connect.getConnection(), productDAOPostgres);
+        ReizigerDAOPostgres reizigerDAOPostgres = new ReizigerDAOPostgres(connect.getConnection(), mainFuncties);
+        ProductDAOPostgres productDAOPostgres = new ProductDAOPostgres(connect.getConnection(), mainFuncties);
+        AdresDAOPostgres adresDAOPostgres = new AdresDAOPostgres(connect.getConnection(), mainFuncties, reizigerDAOPostgres);
+        OVChipkaartDAOPostgres ovChipkaartDAOPostgres = new OVChipkaartDAOPostgres(connect.getConnection(), productDAOPostgres, reizigerDAOPostgres, mainFuncties);
+        productDAOPostgres.setOvChipkaartDAOPostgres(ovChipkaartDAOPostgres);
 
-        List<Reiziger> reizigers = reizigerDAOPostgres.readAllReiziger();
-        System.out.println(reizigers);
+        Product product0 = new Product(14, "fietsvrij", "een dag zonder fiets!", 12.35, "actief", "2020-08-01");
+        mainFuncties.addProduct(product0);
+        productDAOPostgres.createProduct(product0);
+        product0.setBeschrijving("een dagje gratis op de fiets");
+        productDAOPostgres.updateProduct(product0);
+
+        reizigerDAOPostgres.readAllReiziger();
+        adresDAOPostgres.readAllAdres();
+        ovChipkaartDAOPostgres.readAllOVKaart();
+        productDAOPostgres.readAllProducts();
+
+        product0.addOVChipkaart(mainFuncties.getReizigers().get(1).getOvChipkaarts().get(2));
+        product0.addOVChipkaart(mainFuncties.getReizigers().get(1).getOvChipkaarts().get(1));
+
+        productDAOPostgres.readAllProducts();
+
+        System.out.println(mainFuncties.getReizigers());
         System.out.println();
-
-        System.out.println(reizigerDAOPostgres.readReizigerByID(2));
         System.out.println();
+        System.out.println(mainFuncties.getAdresList());
+        System.out.println();
+        System.out.println();
+        System.out.println(mainFuncties.getOvChipkaarts());
+        System.out.println();
+        System.out.println();
+        System.out.println(mainFuncties.getProducts());
 
-        Product product = new Product(14, "fietsvrij", "een dag zonder fiets!", 12.35, "actief", "2020-08-01");
-        product.addToOV(reizigers.get(1).getOvChipkaarts().get(2));
-        productDAOPostgres.createProduct(product);
+        System.out.println(mainFuncties.getOvChipkaarts());
 
-        System.out.println(reizigerDAOPostgres.readReizigerByID(2));
+        productDAOPostgres.deleteProduct(product0);
 
-        System.out.println(ovChipkaartDAOPostgres.readByReiziger(reizigers.get(1)));
-
-        productDAOPostgres.deleteProductFromOV(product, reizigers.get(1).getOvChipkaarts().get(2));
-
-        System.out.println(ovChipkaartDAOPostgres.readByReiziger(reizigers.get(1)));
-        product.addToOV(reizigers.get(1).getOvChipkaarts().get(2));
-
-        productDAOPostgres.deleteProduct(product);
-
-
+        System.out.println(mainFuncties.getProducts());
     }
 }

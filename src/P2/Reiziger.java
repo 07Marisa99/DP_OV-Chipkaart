@@ -89,6 +89,10 @@ public class Reiziger {
         }
     }
 
+    public Adres getAdres() {
+        return adres;
+    }
+
     @Override
     public String toString() {
         String reizigerString;
@@ -104,7 +108,7 @@ public class Reiziger {
             reizigerString = MessageFormat.format("\n{0}.\t {1} {2}\t: {3} \n\t Woont op {4};", id, voorletters, achternaam, geboortedatum, adresString) + "\n";
         }
         for (OVChipkaart ovChipkaart : ovChipkaarts) {
-            reizigerString += "\n\t " + ovChipkaart;
+            reizigerString += "\n\t " + ovChipkaart.toString();
         }
         return reizigerString;
     }

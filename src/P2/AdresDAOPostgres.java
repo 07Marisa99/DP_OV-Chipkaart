@@ -1,15 +1,27 @@
 package P2;
 
+import P1.MainFuncties;
+
 import java.sql.*;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AdresDAOPostgres implements AdresDAO {
     private Connection connection;
+    private MainFuncties mainFuncties;
+    private ReizigerDAOPostgres reizigerDAOPostgres;
 
-    public AdresDAOPostgres(Connection myConn) {
+    public AdresDAOPostgres(Connection myConn, MainFuncties mainFuncties, ReizigerDAOPostgres reizigerDAOPostgres) {
         connection = myConn;
+        this.mainFuncties = mainFuncties;
+        this.reizigerDAOPostgres = reizigerDAOPostgres;
+    }
+    private Adres exists(int id) {
+        for (Adres adres : mainFuncties.getAdresList()) {
+            if (adres.getAdresID() == id) {
+                return adres;
+            }
+        } return null;
     }
     private Adres toAdres(ResultSet myRs, Reiziger reiziger) throws SQLException {
         int id = myRs.getInt("adres_id");
@@ -18,14 +30,26 @@ public class AdresDAOPostgres implements AdresDAO {
         String straat = myRs.getString("straat");
         String woonplaats = myRs.getString("woonplaats");
         int reizigerId = myRs.getInt("reiziger_id");
+
+        Adres adres = null;
         if (reiziger.getId() == reizigerId) {
-            Adres adres = new Adres(myRs.getInt("adres_id"), myRs.getString("postcode"), myRs.getString("huisnummer"), myRs.getString("straat"), myRs.getString("woonplaats"), reiziger);
+            if (exists(id) == null) {
+                adres = new Adres(myRs.getInt("adres_id"), myRs.getString("postcode"), myRs.getString("huisnummer"), myRs.getString("straat"), myRs.getString("woonplaats"), reiziger);
+                mainFuncties.addAdres(adres);
+            }
+        } else {
+            adres = exists(id);
+            adres.setPostcode(postcode);
+            adres.setHuisnummer(huisnummer);
+            adres.setStraat(straat);
+            adres.setWoonplaats(woonplaats);
             return adres;
-        } return null;
+        } return adres;
 //        return MessageFormat.format("{0}.\t {1} {2},\t {3} {4};", id, straat, huisnummer, postcode, woonplaats);
     }
 
-    public List<Adres> readAllAdres(List<Reiziger> reizigers) {
+    public List<Adres> readAllAdres() {
+        List<Reiziger> reizigers = reizigerDAOPostgres.readAllReiziger();
         List<Adres> adressen = new ArrayList<>();
         try {
             Statement myStmt = connection.createStatement();
@@ -41,7 +65,8 @@ public class AdresDAOPostgres implements AdresDAO {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } return adressen;
+        }
+        return mainFuncties.getAdresList();
     }
 
     public Adres readByReiziger(Reiziger reiziger) {
@@ -75,15 +100,15 @@ public class AdresDAOPostgres implements AdresDAO {
         return true;
     }
 
-    public boolean updateAdress(int aID, String pc, String hn, String str, String wp) {
+    public boolean updateAdress(Adres adres) {
         try {
             Statement myStmt = connection.createStatement();
             String sql = "UPDATE adres SET " +
-                    "postcode = '" + pc +
-                    "', huisnummer = '" + hn +
-                    "', straat = '" + str +
-                    "', woonplaats = '" + wp +
-                    "' WHERE adres_id = " + aID + ";";
+                    "postcode = '" + adres.getPostcode() +
+                    "', huisnummer = '" + adres.getHuisnummer() +
+                    "', straat = '" + adres.getStraat() +
+                    "', woonplaats = '" + adres.getWoonplaats() +
+                    "' WHERE adres_id = " + adres.getAdresID() + ";";
 
             myStmt.executeUpdate(sql);
         } catch (Exception e) {
@@ -93,10 +118,10 @@ public class AdresDAOPostgres implements AdresDAO {
         return true;
     }
 
-    public boolean deleteAdress(int id) {
+    public boolean deleteAdress(Adres adres) {
         try {
             Statement myStmt = connection.createStatement();
-            String sql = "DELETE FROM adres WHERE reiziger_id = " + id;
+            String sql = "DELETE FROM adres WHERE reiziger_id = " + adres.getAdresID();
             myStmt.executeUpdate(sql);
         } catch (Exception e) {
             e.printStackTrace();

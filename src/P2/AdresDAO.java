@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface AdresDAO {
-    List<Adres> readAllAdres(List<Reiziger> reizigers);
+    List<Adres> readAllAdres();
     Adres readByReiziger(Reiziger reiziger);
     boolean createAdress(Adres adres);
-    boolean updateAdress(int aID, String pc, String hn, String str, String wp);
-    boolean deleteAdress(int id);
+    boolean updateAdress(Adres adres);
+    boolean deleteAdress(Adres adres);
 }
