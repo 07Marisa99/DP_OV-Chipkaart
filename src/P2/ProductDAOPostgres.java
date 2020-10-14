@@ -41,6 +41,11 @@ public class ProductDAOPostgres implements ProductDAO{
         String beschrijving = productRs.getString("beschrijving");
         double prijs = productRs.getDouble("prijs");
 
+//        doe dit aan de hand van OVChipkaart omdat het pas echt uitmaakt of het product compleet is als ik alle producten wil zien
+//        in dat geval roep ik readAllProducts() aan en dan worden alle producten aangemaakt en alle OVChips gelezen en goed toegevoegd
+//        in het geval van readByOV() is het belangrijker om te zien welke producten er bij het OV horen.
+//        ook zou het aanroepen van de OVChipkaartDAO reader zorgen voor StackOverflow omdat die deze functie weer aanroept.
+
         Product product = null;
         if (exists(product_nummer) == null) {
             if (product_Nummer == product_nummer) {
@@ -125,23 +130,23 @@ public class ProductDAOPostgres implements ProductDAO{
     @Override
     public boolean updateProduct(Product product) {
         try {
-//            int kaart_nummer = OVProduct.getInt("kaart_nummer");
-//            int product_Nummer = OVProduct.getInt("product_nummer");
-//            String status = OVProduct.getString("status");
-//            String last_update = OVProduct.getString("last_update");
-//
-//            int product_nummer = productRs.getInt("product_nummer");
-//            String naam = productRs.getString("naam");
-//            String beschrijving = productRs.getString("beschrijving");
-//            double prijs = productRs.getDouble("prijs");
-
             PreparedStatement myStmt = connection.prepareStatement("UPDATE product SET naam = ?, beschrijving = ?, prijs = ? WHERE product_nummer = ?;");
             myStmt.setString(1, product.getNaam());
             myStmt.setString(2, product.getBeschrijving());
             myStmt.setDouble(3, product.getPrijs());
             myStmt.setInt(4, product.getProduct_nummer());
-
             myStmt.executeUpdate();
+
+            myStmt = connection.prepareStatement("DELETE FROM ov_chipkaart_product WHERE product_id = " + product.getProduct_nummer() + ";");
+
+            for (OVChipkaart ovChipkaart : product.getOvChipkaarts()) {
+                myStmt = connection.prepareStatement("INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer)" +
+                        "VALUES ("+ ovChipkaart.getId() + ", " + product.getProduct_nummer() + ");");
+                myStmt.setInt(1, ovChipkaart.getId());
+                myStmt.setInt(1, product.getProduct_nummer());
+                myStmt.executeUpdate();
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;
